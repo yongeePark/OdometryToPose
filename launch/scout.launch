@@ -1,0 +1,6 @@
+<?xml version="1.0"?>
+<launch>
+	<node name="odometry_to_pose" pkg="odometry_to_pose" type="odometry_to_pose"
+	output="screen"
+	args="/vins_node/odometry /scout/mavros/vision_pose/pose" />
+</launch>
