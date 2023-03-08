@@ -13,6 +13,8 @@ find_package(catkin REQUIRED COMPONENTS
   roscpp
 )
 
+find_package(Eigen3)
+
 ## System dependencies are found with CMake's conventions
 # find_package(Boost REQUIRED COMPONENTS system)
 
@@ -147,6 +149,7 @@ add_executable(odometry_to_pose src/odometry_to_pose.cpp)
 add_dependencies(odometry_to_pose ${${PROJECT_NAME}_EXPORTED_TARGETS} ${catkin_EXPORTED_TARGETS})
 target_link_libraries(odometry_to_pose
    ${catkin_LIBRARIES}
+   Eigen3::Eigen
 )
 
 #############
