@@ -21,13 +21,15 @@ public:
 	{
 		pub_ = nh_.advertise<geometry_msgs::PoseStamped>(published_topic,10);
 		sub_ = nh_.subscribe(subscribed_topic,10,&Changer::OdometryCallback,this);
+
 	}
 	// Callback
 	// It could also conduct rotation
 	void OdometryCallback(const nav_msgs::Odometry::ConstPtr& msg)
 	{
 		geometry_msgs::PoseStamped pose_msg;
-		pose_msg.header = msg->header;
+		pose_msg.header.stamp = ros::Time::now(); 
+		pose_msg.header.frame_id = "world";
 
 		//position transform
 		Vector3d initial_position(msg->pose.pose.position.x, msg->pose.pose.position.y, msg->pose.pose.position.z);
@@ -80,9 +82,16 @@ public:
 		pose_msg.pose.orientation.z = q_rotated.z();
 		pose_msg.pose.orientation.w = q_rotated.w();
 
-
-
 		pub_.publish(pose_msg);
+		/*
+		ros::Rate loop_rate(10);
+		loop_rate.sleep();
+		pub_.publish(pose_msg);
+		loop_rate.sleep();
+		pub_.publish(pose_msg);
+		loop_rate.sleep();
+		pub_.publish(pose_msg);
+		*/
 	}
 };
 
