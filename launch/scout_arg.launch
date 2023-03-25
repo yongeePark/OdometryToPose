@@ -1,0 +1,11 @@
+<?xml version="1.0"?>
+<launch>
+	<arg name="odom" default="/vins_node/odometry" />
+	<arg name="use_t265" default="false" />
+	
+	<node name="odometry_to_pose" pkg="odometry_to_pose" type="odometry_to_pose"
+	output="screen"
+	args="$(arg odom) /scout/mavros/vision_pose/pose" >
+		<param name="use_t265" value="$(arg use_t265)" />
+	</node>
+</launch>
