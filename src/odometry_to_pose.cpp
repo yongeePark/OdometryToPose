@@ -58,7 +58,7 @@ public:
 			// q_base : camera frame based
 			// default : x 90 degree
 			// camera angle : x 5 degree tilted
-			Quaterniond q_base(AngleAxisd(5*M_PI/180,Vector3d::UnitX()));
+			Quaterniond q_base(AngleAxisd(0*M_PI/180,Vector3d::UnitX()));
 			Quaterniond q_camera_tilt(AngleAxisd(M_PI/2,Vector3d::UnitX()));
 			Matrix3d matrix_q_base = q_base.matrix() * q_camera_tilt.matrix() *  matrix_initial;
 
