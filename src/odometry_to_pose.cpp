@@ -71,8 +71,6 @@ public:
 			//Matrix3d matrix_rotated = rotation_z_90 * q_matrix;
 			//Matrix3d matrix_rotated = Matrix3d::Identity() * q_matrix;
 			Matrix3d matrix_rotated = rotate_cam_to_world * matrix_q_base * rotate_cam_to_world.inverse(); 
-			/*
-			*/
 
 			Quaterniond q_rotated(matrix_rotated);
 			//Quaterniond q_rotated = q_initial * AngleAxisd(M_PI/2,Vector3d::UnitZ());
@@ -91,23 +89,55 @@ public:
 			pose_msg.pose.orientation.w = q_rotated.w();
 
 			pub_.publish(pose_msg);
-			/*
-			ros::Rate loop_rate(10);
-			loop_rate.sleep();
-			pub_.publish(pose_msg);
-			loop_rate.sleep();
-			pub_.publish(pose_msg);
-			loop_rate.sleep();
-			pub_.publish(pose_msg);
-			*/
 		}
-		else
+		else // if use t265
 		{
 			geometry_msgs::PoseStamped pose_msg;
 			pose_msg.header.stamp = ros::Time::now(); 
 			pose_msg.header.frame_id = "world";
 		
-			pose_msg.pose = msg->pose.pose;
+            // if t265 is facing backward
+			//position transform
+			Vector3d initial_position(msg->pose.pose.position.x, msg->pose.pose.position.y, msg->pose.pose.position.z);
+			
+			Eigen::Matrix3d rotation_offset;
+			rotation_offset = AngleAxisd(-M_PI/2,Vector3d::UnitX()); // facing above
+			// rotation_offset = AngleAxisd(M_PI,Vector3d::UnitZ()); // facing backward
+
+			Vector3d rotated_position = rotation_offset* initial_position;
+
+			// rotation transform
+			// quaternion order: w,x,y,z
+			// q_initial : real camera based
+			Quaterniond q_initial(msg->pose.pose.orientation.w,msg->pose.pose.orientation.x,msg->pose.pose.orientation.y,msg->pose.pose.orientation.z);
+
+			Matrix3d matrix_initial = q_initial.matrix();
+
+            Matrix3d matrix_offset;
+            // facing upward, x -90
+            matrix_offset<< -1, 0, 0,
+                            0, 0,-1,
+                            0, 1, 0;
+            // facing backward, z 180
+            //matrix_z180 << -1, 0, 0,
+            //                0, -1,0,
+            //                0, 0, 1;
+			Matrix3d matrix_rotated = matrix_offset * matrix_initial * matrix_offset.inverse(); 
+
+
+			Quaterniond q_rotated(matrix_rotated);
+
+			// publish
+			pose_msg.pose.position.x = rotated_position(0);
+			pose_msg.pose.position.y = rotated_position(1);
+			pose_msg.pose.position.z = rotated_position(2);
+
+			pose_msg.pose.orientation.x = q_rotated.x();
+			pose_msg.pose.orientation.y = q_rotated.y();
+			pose_msg.pose.orientation.z = q_rotated.z();
+			pose_msg.pose.orientation.w = q_rotated.w();
+
+			//pose_msg.pose = msg->pose.pose;
 			pub_.publish(pose_msg);
 		}
 	}
