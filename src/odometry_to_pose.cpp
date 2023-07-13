@@ -94,22 +94,23 @@ public:
 		{
 			geometry_msgs::PoseStamped pose_msg;
 			pose_msg.header.stamp = ros::Time::now(); 
-			pose_msg.header.frame_id = "world";
+			pose_msg.header.frame_id = msg->header.frame_id;
 		
             // if t265 is facing backward
 			//position transform
 			Vector3d initial_position(msg->pose.pose.position.x, msg->pose.pose.position.y, msg->pose.pose.position.z);
 			
 			Eigen::Matrix3d rotation_offset;
-			rotation_offset = AngleAxisd(-M_PI/2*0,Vector3d::UnitY()); // facing above, y -90
-			// rotation_offset = AngleAxisd(M_PI,Vector3d::UnitZ()); // facing backward
+			// rotation_offset = AngleAxisd(-M_PI/2*0,Vector3d::UnitY()); // facing above, y -90
+			rotation_offset = AngleAxisd(M_PI,Vector3d::UnitZ()); // facing backward
 
 			Vector3d rotated_position = rotation_offset* initial_position;
 
 			// rotation transform
 			// quaternion order: w,x,y,z
 			// q_initial : real camera based
-			Quaterniond q_facing(AngleAxisd(M_PI/2,Vector3d::UnitY()));
+			// Quaterniond q_facing(AngleAxisd(M_PI/2,Vector3d::UnitY()));
+			Quaterniond q_facing(AngleAxisd(0,Vector3d::UnitY()));
 
 			Quaterniond q_initial(msg->pose.pose.orientation.w,msg->pose.pose.orientation.x,msg->pose.pose.orientation.y,msg->pose.pose.orientation.z);
 
@@ -117,13 +118,14 @@ public:
 
             Matrix3d matrix_offset;
             // facing upward, y -90
-            matrix_offset<< 0, 0,-1,
-                            0, 1, 0,
-                            1, 0, 0;
+            // matrix_offset<< 0, 0,-1,
+            //                 0, 1, 0,
+            //                 1, 0, 0;
+
             // facing backward, z 180
-            //matrix_z180 << -1, 0, 0,
-            //                0, -1,0,
-            //                0, 0, 1;
+            matrix_offset << -1, 0, 0,
+                              0, -1,0,
+                              0, 0, 1;
 			Matrix3d matrix_rotated = matrix_offset * matrix_initial * matrix_offset.inverse(); 
 
 
