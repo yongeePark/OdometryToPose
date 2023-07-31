@@ -2,13 +2,13 @@
 <launch>
 	<!--<arg name="odom" default="/vins_node/odometry" />-->
 	<!-- <arg name="odom" default="/camera2/odom/sample" /> -->
-	<arg name="odom" default="/t265_node/odom/sample" />
+	<arg name="odom" default="/t265_back/odom/sample" />
 	
 	<arg name="use_t265" default="true" />
 	
 	<node name="odometry_to_pose" pkg="odometry_to_pose" type="odometry_to_pose"
 	output="screen"
-	args="$(arg odom) /scout/mavros/vision_pose/pose" >
+	args="$(arg odom) mavros/vision_pose/pose" >
 		<param name="use_t265" value="$(arg use_t265)" />
 	</node>
 </launch>
