@@ -1,8 +1,8 @@
 <?xml version="1.0"?>
 <launch>
 	<!--<arg name="odom" default="/vins_node/odometry" />-->
-	<!-- <arg name="odom" default="/camera2/odom/sample" /> -->
-	<arg name="odom" default="/t265_back/odom/sample" />
+	<arg name="odom" default="/t265_node/odom/sample" /> 
+	<!-- <arg name="odom" default="/t265_back/odom/sample" />-->
 	
 	<arg name="use_t265" default="true" />
 	

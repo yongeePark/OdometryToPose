@@ -90,13 +90,15 @@ public:
 
 			pub_.publish(pose_msg);
 		}
-		else // if use t265
+		// if you use odometry given from t265
+		else 
 		{
 			geometry_msgs::PoseStamped pose_msg;
 			pose_msg.header.stamp = ros::Time::now(); 
-			pose_msg.header.frame_id = msg->header.frame_id;
+			pose_msg.header.frame_id = "map"; 
+			//pose_msg.header.frame_id = msg->header.frame_id;
 		
-            // if t265 is facing backward
+            		// if t265 is facing backward
 			//position transform
 			Vector3d initial_position(msg->pose.pose.position.x, msg->pose.pose.position.y, msg->pose.pose.position.z);
 			
